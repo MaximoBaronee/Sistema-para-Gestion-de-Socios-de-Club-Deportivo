@@ -19,7 +19,7 @@ def abrir_menu_principal():
 
 def gestionar_socios():
     ventana_socios = tk.Toplevel()
-    ventana_socios.title("Gestión de Socios")
+    from gestion_socios import crear_interfaz_socios
     crear_interfaz_socios(ventana_socios)
 
 def gestionar_pagos():
