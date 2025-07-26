@@ -7,37 +7,49 @@ def crear_interfaz_socios(ventana_socios):
     ventana_socios.title("Gestión de Socios")
     ventana_socios.geometry("800x600")
     
-    # Frame principal
+    # Frame principal (solo usa pack)
     frame_principal = tk.Frame(ventana_socios)
     frame_principal.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
     
-    # Frame para el formulario
+    # Frame para el formulario (centrado con pack)
     frame_form = tk.Frame(frame_principal)
-    frame_form.pack(fill=tk.X, pady=(0, 10))
+    frame_form.pack(pady=(0, 15), anchor='center')
     
-    # Campos del formulario
-    tk.Label(frame_form, text="Nombre:").grid(row=0, column=0, padx=5, pady=5, sticky="e")
-    entry_nombre = tk.Entry(frame_form, width=30)
-    entry_nombre.grid(row=0, column=1, padx=5, pady=5)
+    # Frame para campos (centrado)
+    frame_campos = tk.Frame(frame_form)
+    frame_campos.pack()
     
-    tk.Label(frame_form, text="DNI:").grid(row=1, column=0, padx=5, pady=5, sticky="e")
-    entry_dni = tk.Entry(frame_form, width=20)
-    entry_dni.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+    # Nombre
+    frame_nombre = tk.Frame(frame_campos)
+    frame_nombre.pack(pady=5)
+    tk.Label(frame_nombre, text="Nombre:").pack(side=tk.LEFT, padx=5)
+    entry_nombre = tk.Entry(frame_nombre, width=30)
+    entry_nombre.pack(side=tk.LEFT)
     
-    tk.Label(frame_form, text="Teléfono:").grid(row=2, column=0, padx=5, pady=5, sticky="e")
-    entry_telefono = tk.Entry(frame_form, width=20)
-    entry_telefono.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+    # DNI
+    frame_dni = tk.Frame(frame_campos)
+    frame_dni.pack(pady=5)
+    tk.Label(frame_dni, text="DNI:").pack(side=tk.LEFT, padx=5)
+    entry_dni = tk.Entry(frame_dni, width=20)
+    entry_dni.pack(side=tk.LEFT)
+    
+    # Teléfono
+    frame_telefono = tk.Frame(frame_campos)
+    frame_telefono.pack(pady=5)
+    tk.Label(frame_telefono, text="Teléfono:").pack(side=tk.LEFT, padx=5)
+    entry_telefono = tk.Entry(frame_telefono, width=20)
+    entry_telefono.pack(side=tk.LEFT)
     
     # Frame para la tabla
     frame_tabla = tk.Frame(frame_principal)
     frame_tabla.pack(fill=tk.BOTH, expand=True)
     
-    # Configurar Treeview
+    # Configurar Treeview (solo pack)
     tree = ttk.Treeview(frame_tabla, columns=("ID", "Nombre", "DNI", "Teléfono"), show="headings")
-    tree.heading("ID", text="ID")
-    tree.heading("Nombre", text="Nombre")
-    tree.heading("DNI", text="DNI")
-    tree.heading("Teléfono", text="Teléfono")
+    tree.heading("ID", text="ID", anchor="center")
+    tree.heading("Nombre", text="Nombre", anchor="w")
+    tree.heading("DNI", text="DNI", anchor="center")
+    tree.heading("Teléfono", text="Teléfono", anchor="center")
     
     tree.column("ID", width=50, anchor="center")
     tree.column("Nombre", width=200)
@@ -50,46 +62,51 @@ def crear_interfaz_socios(ventana_socios):
     tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
     scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
     
-    # Frame para botones
-    frame_botones = tk.Frame(frame_principal)
-    frame_botones.pack(fill=tk.X, pady=(10, 0))
+    # Frame para botones principales (centrado)
+    frame_botones_accion = tk.Frame(frame_principal)
+    frame_botones_accion.pack(pady=(10, 5), anchor='center')
     
-    # Botones
+    # Botones de acción (solo pack)
     btn_agregar = tk.Button(
-        frame_botones,
+        frame_botones_accion,
         text="Agregar Socio",
         command=lambda: agregar_socio_interfaz(entry_nombre, entry_dni, entry_telefono, tree),
         bg="#28a745",
         fg="white",
         font=("Arial", 10, "bold"),
-        padx=10,
+        padx=15,
         pady=5
     )
-    btn_agregar.pack(side=tk.LEFT, padx=5)
+    btn_agregar.pack(side=tk.LEFT, padx=10)
     
     btn_eliminar = tk.Button(
-        frame_botones,
+        frame_botones_accion,
         text="Eliminar Socio",
         command=lambda: eliminar_socio_interfaz(tree),
         bg="#dc3545",
         fg="white",
         font=("Arial", 10),
-        padx=10,
+        padx=15,
         pady=5
     )
-    btn_eliminar.pack(side=tk.LEFT, padx=5)
+    btn_eliminar.pack(side=tk.LEFT, padx=10)
+    
+    # Frame para botón volver (centrado abajo)
+    frame_boton_volver = tk.Frame(frame_principal)
+    frame_boton_volver.pack(pady=(5, 10), anchor='center')
     
     btn_volver = tk.Button(
-        frame_botones,
+        frame_boton_volver,
         text="Volver al Menú",
         command=ventana_socios.destroy,
         bg="#6c757d",
         fg="white",
         font=("Arial", 10),
-        padx=10,
-        pady=5
+        padx=15,
+        pady=5,
+        width=15
     )
-    btn_volver.pack(side=tk.RIGHT, padx=5)
+    btn_volver.pack()
     
     # Cargar datos iniciales
     listar_socios_interfaz(tree)
