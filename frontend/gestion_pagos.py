@@ -1,6 +1,10 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import tkinter as tk
 from tkinter import ttk, messagebox
-from socios import obtener_socios_con_pagos, actualizar_estado_pago
+from backend.socios import obtener_socios_con_pagos, actualizar_estado_pago
 
 def crear_interfaz_pagos(ventana_pagos):
     # Frame principal

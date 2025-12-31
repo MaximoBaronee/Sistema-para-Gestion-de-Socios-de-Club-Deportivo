@@ -1,6 +1,9 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import tkinter as tk
-from gestion_pagos import crear_interfaz_pagos, configurar_botones, cargar_socios
-from gestion_socios import crear_interfaz_socios
+from frontend.gestion_pagos import crear_interfaz_pagos, configurar_botones, cargar_socios
 
 def abrir_menu_principal():
     menu = tk.Tk()
@@ -18,8 +21,8 @@ def abrir_menu_principal():
     menu.mainloop()
 
 def gestionar_socios():
+    from frontend.gestion_socios import crear_interfaz_socios
     ventana_socios = tk.Toplevel()
-    from gestion_socios import crear_interfaz_socios
     crear_interfaz_socios(ventana_socios)
 
 def gestionar_pagos():

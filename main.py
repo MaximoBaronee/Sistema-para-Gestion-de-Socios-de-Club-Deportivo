@@ -1,7 +1,10 @@
-# main.py
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 import tkinter as tk
-from login import mostrar_login
-from menu_principal import mostrar_menu
+from frontend.login import mostrar_login
+from frontend.menu_principal import mostrar_menu
 
 def iniciar_app():
     root = tk.Tk()

@@ -1,6 +1,10 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import tkinter as tk
 from tkinter import ttk, messagebox
-from socios import obtener_socios, agregar_socio, eliminar_socio
+from backend.socios import obtener_socios, agregar_socio, eliminar_socio
 
 def crear_interfaz(root):
     """Crea la interfaz gráfica para la gestión de socios."""

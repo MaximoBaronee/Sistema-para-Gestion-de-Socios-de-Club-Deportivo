@@ -1,7 +1,11 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import tkinter as tk
 from tkinter import ttk, messagebox
-from database import ejecutar_consulta
-from socios import agregar_socio, eliminar_socio, obtener_socios
+from backend.database import ejecutar_consulta
+from backend.socios import agregar_socio, eliminar_socio, obtener_socios
 
 def crear_interfaz_socios(ventana_socios):
     ventana_socios.title("Gestión de Socios")

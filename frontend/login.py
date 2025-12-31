@@ -1,24 +1,32 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import tkinter as tk
 from tkinter import messagebox
 import mysql.connector
-from menu_principal import abrir_menu_principal
+from dotenv import load_dotenv
+from frontend.menu_principal import abrir_menu_principal
 
-# Conectar con la base de datos
+# Cargar variables de entorno
+load_dotenv()
+
+# Conectar con la base de datos usando variables de entorno
 try:
     conexion = mysql.connector.connect(
-        host="", # Coloque la dirección del host aquí,por ejemplo "localhost"
-        user="", # Coloque el nombre de usuario aquí,por ejemplo "root"
-        password="",  # Coloque la contraseña aquí
-        database="" # Coloque el nombre de tu base de datos aquí
+        host=os.getenv("DB_HOST", "localhost"),
+        user=os.getenv("DB_USER", "root"),
+        password=os.getenv("DB_PASSWORD", ""),
+        database=os.getenv("DB_NAME", "club_deportivo_db")
     )
     cursor = conexion.cursor()
 except mysql.connector.Error as e:
     messagebox.showerror("Error", f"No se pudo conectar a la base de datos: {e}")
     exit()
 
-# Usuario predeterminado
-ADMIN_USUARIO = "" #Coloque el nombre de usuario aquí
-ADMIN_CLAVE = "" #Coloque la contraseña aquí
+# Usuario admin predeterminado
+ADMIN_USUARIO = "admin"
+ADMIN_CLAVE = "admin123"
 
 # Variable global para la ventana principal
 root = None

@@ -1,4 +1,8 @@
-from database import ejecutar_consulta, conectar_db
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from backend.database import ejecutar_consulta, conectar_db
 
 def obtener_socios():
     """Recupera la lista de socios desde la base de datos."""
@@ -28,8 +32,6 @@ def obtener_socios_con_pagos():
     WHERE s.estado = 'Activo'
     """
     return ejecutar_consulta(query, fetch=True)
-
-from database import ejecutar_consulta, conectar_db
 
 def actualizar_estado_pago(id_socio, nuevo_estado):
     """Actualiza el estado de pago de manera confiable"""
