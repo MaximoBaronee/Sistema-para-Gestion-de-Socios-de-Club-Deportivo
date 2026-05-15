@@ -24,14 +24,53 @@ def eliminar_socio(id_socio):
 def obtener_socios_con_pagos():
     """Obtiene la lista de socios con información de sus últimos pagos."""
     query = """
-    SELECT s.id_socio, s.nombre, s.dni, 
-           IFNULL((SELECT p.estado FROM pagos p 
-                  WHERE p.id_socio = s.id_socio 
-                  ORDER BY p.fecha_vencimiento DESC LIMIT 1), 'Pendiente') as estado_pago
+    SELECT s.id_socio, s.nombre, s.dni,
+           COALESCE((SELECT p.estado FROM pagos p
+                  WHERE p.id_socio = s.id_socio
+                  ORDER BY p.fecha_pago DESC, p.id_pago DESC LIMIT 1), 'Pendiente') as estado_pago
     FROM socios s
     WHERE s.estado = 'Activo'
     """
     return ejecutar_consulta(query, fetch=True)
+
+def buscar_socio_por_nombre(nombre):
+    """Busca socios por nombre (búsqueda parcial)."""
+    query = """
+    SELECT s.id_socio, s.nombre, s.dni,
+           COALESCE((SELECT p.estado FROM pagos p
+                  WHERE p.id_socio = s.id_socio
+                  ORDER BY p.fecha_pago DESC, p.id_pago DESC LIMIT 1), 'Pendiente') as estado_pago
+    FROM socios s
+    WHERE s.nombre LIKE %s AND s.estado = 'Activo'
+    """
+    parametro = f"%{nombre}%"
+    return ejecutar_consulta(query, (parametro,), fetch=True)
+
+def buscar_socio_por_dni(dni):
+    """Busca socios por DNI (búsqueda exacta o parcial)."""
+    query = """
+    SELECT s.id_socio, s.nombre, s.dni,
+           COALESCE((SELECT p.estado FROM pagos p
+                  WHERE p.id_socio = s.id_socio
+                  ORDER BY p.fecha_pago DESC, p.id_pago DESC LIMIT 1), 'Pendiente') as estado_pago
+    FROM socios s
+    WHERE s.dni LIKE %s AND s.estado = 'Activo'
+    """
+    parametro = f"%{dni}%"
+    return ejecutar_consulta(query, (parametro,), fetch=True)
+
+def filtrar_socios_por_estado(estado):
+    """Filtra socios por estado de pago (Pendiente o Pagado)."""
+    query = """
+    SELECT s.id_socio, s.nombre, s.dni,
+           COALESCE((SELECT p.estado FROM pagos p
+                  WHERE p.id_socio = s.id_socio
+                  ORDER BY p.fecha_pago DESC, p.id_pago DESC LIMIT 1), 'Pendiente') as estado_pago
+    FROM socios s
+    WHERE s.estado = 'Activo'
+    HAVING estado_pago = %s
+    """
+    return ejecutar_consulta(query, (estado,), fetch=True)
 
 def actualizar_estado_pago(id_socio, nuevo_estado):
     """Actualiza el estado de pago de manera confiable"""
@@ -39,19 +78,19 @@ def actualizar_estado_pago(id_socio, nuevo_estado):
         # Obtener tipo de membresía
         query_socio = "SELECT tipo_membresia FROM socios WHERE id_socio = %s"
         socio_data = ejecutar_consulta(query_socio, (id_socio,), fetch=True)
-        
+
         if not socio_data:
             raise ValueError("Socio no encontrado")
-        
+
         tipo_membresia = socio_data[0][0]
-        
+
         # Calcular monto y período
         montos = {'Mensual': 3000, 'Trimestral': 8000, 'Anual': 25000}
         periodos = {'Mensual': 1, 'Trimestral': 3, 'Anual': 12}
-        
+
         monto = montos.get(tipo_membresia, 0)
         meses = periodos.get(tipo_membresia, 1)
-        
+
         # Insertar nuevo registro de pago
         query = """
         INSERT INTO pagos (id_socio, monto, fecha_pago, fecha_vencimiento, estado)
@@ -62,7 +101,7 @@ def actualizar_estado_pago(id_socio, nuevo_estado):
         cursor.execute(query, (id_socio, monto, meses, nuevo_estado))
         conexion.commit()
         return True
-        
+
     except Exception as e:
         print(f"Error en actualizar_estado_pago: {e}")
         if 'conexion' in locals():
